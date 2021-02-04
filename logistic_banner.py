@@ -17,7 +17,9 @@ def bifurcation_diagram(seed, n_skip, n_iter, r_min=0,r_nsteps = 1128,x_nsteps= 
     noize_epsilon = 0
     # Create the r values to loop. For each r value we will plot n_iter points
     r_range = np.linspace(r_min, 4, r_nsteps)
-
+    a = 0.1
+    last_x = 0.0
+    last_last_x = 0.0
     for r_idx,r in enumerate(r_range):
         x = seed;
         # For each r, iterate the logistic function and collect datapoint if n_skip iterations have occurred
@@ -28,10 +30,12 @@ def bifurcation_diagram(seed, n_skip, n_iter, r_min=0,r_nsteps = 1128,x_nsteps= 
                 R.append(r)
                 X.append(x)
 
-            x = logistic_eq(r,x)
-            x += random.random()*noize_epsilon
+            x = (1.0 - a) * logistic_eq(r,x) + a * last_x
+            x += random.random() * noize_epsilon
             if x>1.0:
                 x = 1.0
+            last_last_x = last_x
+            last_x = x
     # Plot the data
     RX = np.log10(RX+0.000001)
     dpi = 96
